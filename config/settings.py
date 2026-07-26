@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure-jcq-in&7*=%24zjb+3wrf00&$s12!-x3#&j_5a23s7!0xi^)t7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://shalom-site.onrender.com']
 
 
 # Application definition
