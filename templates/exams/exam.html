@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ exam.subject.title }}
+{% endblock %}
+
+{% block content %}
+
+<h2>
+
+{{ exam.subject.title }}
+
+</h2>
+
+<div class="alert alert-danger">
+
+Time Remaining
+
+<span id="timer">
+
+Loading...
+
+</span>
+
+</div>
+
+<form method="POST">
+
+{% csrf_token %}
+
+{% for question in questions %}
+
+<div class="card mb-4">
+
+<div class="card-header">
+
+Question {{ forloop.counter }}
+
+</div>
+
+<div class="card-body">
+
+<p>
+
+{{ question.question }}
+
+</p>
+
+<textarea
+
+class="form-control"
+
+rows="5"
+
+name="question_{{ question.id }}"
+
+></textarea>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+<button class="btn btn-success">
+
+Submit Examination
+
+</button>
+
+</form>
+
+{% endblock %}

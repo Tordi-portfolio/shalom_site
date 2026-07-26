@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+
+<div class="hero text-center">
+
+    <h1 class="display-4 fw-bold">
+
+        Welcome to the Examination System
+
+    </h1>
+
+    <p class="lead">
+
+        Take online examinations securely and efficiently.
+
+    </p>
+
+    {% if not user.is_authenticated %}
+
+        <a href="{% url 'register' %}" class="btn btn-lg">
+
+            Get Started
+
+        </a>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

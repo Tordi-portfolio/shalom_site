@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+{{ title }}
+
+{% endblock %}
+
+{% block content %}
+
+<style>
+.form-page-card{
+  background: var(--card);
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 2.25rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.form-page-card h2{
+  margin-bottom: 1.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--paper-line);
+}
+
+.form-page-card .btn-primary{
+  padding: 0.6rem 2rem;
+}
+</style>
+
+<div class="form-page-card">
+
+<h2>
+
+{{ title }}
+
+</h2>
+
+<form method="POST">
+
+{% csrf_token %}
+
+{{ form.as_p }}
+
+<button class="btn btn-primary">
+
+Save Subject
+
+</button>
+
+</form>
+
+</div>
+
+{% endblock %}

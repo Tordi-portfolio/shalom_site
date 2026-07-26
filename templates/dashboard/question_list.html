@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}
+Questions
+{% endblock %}
+
+{% block content %}
+
+<style>
+/* ---------- Tables ---------- */
+.table-card{
+  background: var(--card);
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.table-ledger{
+  margin-bottom: 0;
+}
+
+.table-ledger thead th{
+  background: var(--ink);
+  color: #fff;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  border: none;
+  padding: 0.9rem 1.25rem;
+  vertical-align: middle;
+}
+
+.table-ledger tbody td{
+  padding: 1rem 1.25rem;
+  border-color: var(--paper-line);
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+
+.table-ledger tbody tr{
+  transition: background 0.12s ease;
+}
+.table-ledger tbody tr:hover{
+  background: rgba(217,142,43,0.05);
+}
+
+.table-ledger tbody tr:last-child td{
+  border-bottom: none;
+}
+
+.order-pill{
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 500;
+  background: var(--paper);
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.55rem;
+  font-size: 0.82rem;
+  color: var(--slate);
+}
+
+.marks-pill{
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 500;
+  background: rgba(217,142,43,0.1);
+  border: 1px solid rgba(217,142,43,0.25);
+  color: var(--amber-dark);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.6rem;
+  font-size: 0.82rem;
+}
+
+.btn-warning{
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--ink);
+  font-weight: 500;
+}
+.btn-warning:hover{
+  background: var(--amber-dark);
+  border-color: var(--amber-dark);
+  color: var(--ink);
+}
+
+.empty-state{
+  text-align: center;
+  padding: 3rem 1rem !important;
+  color: var(--slate);
+  font-size: 0.95rem;
+}
+
+.page-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.page-header h2{
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px){
+  .table-ledger thead{ display: none; }
+  .table-ledger, .table-ledger tbody, .table-ledger tr, .table-ledger td{
+    display: block;
+    width: 100%;
+  }
+  .table-ledger tr{ border-bottom: 2px solid var(--paper-line); padding: 0.75rem 0; }
+  .table-ledger td{
+    border: none;
+    padding: 0.35rem 1.25rem;
+  }
+}
+</style>
+
+<div class="page-header">
+
+    <h2>{{ subject.title }}</h2>
+
+    <a href="{% url 'add_question' subject.id %}"
+    class="btn btn-success">
+
+    <i class="bi bi-plus-lg"></i> Add Question
+
+    </a>
+
+</div>
+
+<div class="table-card">
+
+<table class="table table-ledger mb-0">
+
+<thead>
+
+<tr>
+
+<th width="70">#</th>
+
+<th>Question</th>
+
+<th width="100">Marks</th>
+
+<th width="220" class="text-end">Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for question in questions %}
+
+<tr>
+
+<td><span class="order-pill">{{ question.order }}</span></td>
+
+<td>{{ question.question|truncatewords:12 }}</td>
+
+<td><span class="marks-pill">{{ question.marks }}</span></td>
+
+<td class="text-end">
+
+<a href="{% url 'edit_question' question.id %}"
+class="btn btn-warning btn-sm">
+
+Edit
+
+</a>
+
+<a href="{% url 'delete_question' question.id %}"
+class="btn btn-danger btn-sm"
+onclick="return confirm('Delete this question?');">
+
+Delete
+
+</a>
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="4" class="empty-state">
+
+<i class="bi bi-inbox"></i>
+No questions uploaded.
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+{% endblock %}

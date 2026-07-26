@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block title %}
+Subjects
+{% endblock %}
+
+{% block content %}
+
+<style>
+/* ---------- Tables ---------- */
+.table-card{
+  background: var(--card);
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.table-ledger{
+  margin-bottom: 0;
+}
+
+.table-ledger thead th{
+  background: var(--ink);
+  color: #fff;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  border: none;
+  padding: 0.9rem 1.25rem;
+  vertical-align: middle;
+}
+
+.table-ledger tbody td{
+  padding: 1rem 1.25rem;
+  border-color: var(--paper-line);
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+
+.table-ledger tbody tr{
+  transition: background 0.12s ease;
+}
+.table-ledger tbody tr:hover{
+  background: rgba(217,142,43,0.05);
+}
+
+.table-ledger tbody tr:last-child td{
+  border-bottom: none;
+}
+
+.badge{
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 500;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.7rem;
+  border-radius: var(--radius-sm);
+}
+
+.badge.bg-success{
+  background: rgba(47,125,92,0.12) !important;
+  color: var(--success) !important;
+  border: 1px solid rgba(47,125,92,0.25);
+}
+
+.badge.bg-danger{
+  background: rgba(178,58,50,0.1) !important;
+  color: var(--danger) !important;
+  border: 1px solid rgba(178,58,50,0.22);
+}
+
+.btn-info{
+  background: var(--ink-soft);
+  border-color: var(--ink-soft);
+  color: #fff;
+}
+.btn-info:hover{
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.btn-warning{
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--ink);
+  font-weight: 500;
+}
+.btn-warning:hover{
+  background: var(--amber-dark);
+  border-color: var(--amber-dark);
+  color: var(--ink);
+}
+
+.empty-state{
+  text-align: center;
+  padding: 3rem 1rem !important;
+  color: var(--slate);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px){
+  .table-ledger thead{ display: none; }
+  .table-ledger, .table-ledger tbody, .table-ledger tr, .table-ledger td{
+    display: block;
+    width: 100%;
+  }
+  .table-ledger tr{ border-bottom: 2px solid var(--paper-line); padding: 0.75rem 0; }
+  .table-ledger td{
+    border: none;
+    padding: 0.35rem 1.25rem;
+  }
+}
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2 class="mb-0">Subjects</h2>
+
+    <a href="{% url 'add_subject' %}" class="btn btn-success">
+        <i class="bi bi-plus-lg"></i> Add Subject
+    </a>
+
+</div>
+
+<div class="table-card">
+
+<table class="table table-ledger mb-0">
+
+    <thead>
+
+        <tr>
+            <th>#</th>
+            <th>Subject</th>
+            <th>Duration</th>
+            <th>Questions</th>
+            <th>Status</th>
+            <th width="320" class="text-end">Actions</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+    {% for subject in subjects %}
+
+        <tr>
+
+            <td class="text-muted">{{ forloop.counter }}</td>
+
+            <td class="fw-medium">{{ subject.title }}</td>
+
+            <td>{{ subject.duration }} Minutes</td>
+
+            <td>{{ subject.questions.count }}</td>
+
+            <td>
+
+                {% if subject.is_active %}
+                    <span class="badge bg-success">Active</span>
+                {% else %}
+                    <span class="badge bg-danger">Inactive</span>
+                {% endif %}
+
+            </td>
+
+            <td class="text-end">
+
+                <a href="{% url 'question_list' subject.id %}"
+                   class="btn btn-info btn-sm">
+                    Questions
+                </a>
+
+                <a href="{% url 'edit_subject' subject.id %}"
+                   class="btn btn-warning btn-sm">
+                    Edit
+                </a>
+
+                <a href="{% url 'delete_subject' subject.id %}"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('Delete this subject?');">
+                    Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+    {% empty %}
+
+        <tr>
+
+            <td colspan="6" class="empty-state">
+
+                <i class="bi bi-inbox"></i>
+                No subjects have been added yet.
+
+            </td>
+
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+</div>
+
+{% endblock %}

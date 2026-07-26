@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ exam.subject.title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-body">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <h3>{{ exam.subject.title }}</h3>
+
+            <div class="text-end">
+
+                <small class="text-muted">Time Remaining</small>
+
+                <h4 id="timer" class="text-danger mb-0"></h4>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <div class="progress mb-3">
+
+            <div
+                class="progress-bar"
+                style="width:{% widthratio number total 100 %}%">
+            </div>
+
+        </div>
+
+        <h5>
+
+            Question {{ number }} of {{ total }}
+
+        </h5>
+
+        <p>
+
+            {{ question.question }}
+
+        </p>
+
+        <form method="POST" id="questionForm">
+
+            {% csrf_token %}
+
+            <textarea
+
+                name="answer"
+
+                id="answer"
+
+                rows="8"
+
+                class="form-control"
+
+                required
+
+            >{{ answer.answer }}</textarea>
+
+            <br>
+
+            <div class="d-flex justify-content-between">
+
+                {% if number > 1 %}
+
+                <a
+                    class="btn btn-secondary"
+                    href="{% url 'question_page' exam.id number|add:'-1' %}">
+
+                    ← Previous
+
+                </a>
+
+                {% else %}
+
+                <div></div>
+
+                {% endif %}
+
+                {% if number == total %}
+
+                <button
+                    class="btn btn-success"
+                    type="submit">
+
+                    Submit Exam
+
+                </button>
+
+                {% else %}
+
+                <button
+                    class="btn btn-primary"
+                    type="submit">
+
+                    Next →
+
+                </button>
+
+                {% endif %}
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+// Submit when Enter is pressed
+const textarea = document.getElementById("answer");
+
+textarea.addEventListener("keydown", function(e){
+
+    if(e.key === "Enter" && !e.shiftKey){
+
+        e.preventDefault();
+
+        document.getElementById("questionForm").submit();
+
+    }
+
+});
+
+
+// ==========================
+// 24-Hour Countdown Timer
+// ==========================
+
+const expiresAt = new Date("{{ exam.expires_at|date:'c' }}").getTime();
+
+function updateTimer(){
+
+    const now = new Date().getTime();
+
+    let distance = expiresAt - now;
+
+    if(distance <= 0){
+
+        document.getElementById("timer").innerHTML = "Expired";
+
+        // Reload so Django detects expiry,
+        // deletes the session,
+        // and returns the user to the dashboard.
+        location.reload();
+
+        return;
+
+    }
+
+    const hours = Math.floor(distance / (1000 * 60 * 60));
+
+    distance %= (1000 * 60 * 60);
+
+    const minutes = Math.floor(distance / (1000 * 60));
+
+    distance %= (1000 * 60);
+
+    const seconds = Math.floor(distance / 1000);
+
+    document.getElementById("timer").innerHTML =
+        String(hours).padStart(2,'0') + ":" +
+        String(minutes).padStart(2,'0') + ":" +
+        String(seconds).padStart(2,'0');
+
+}
+
+updateTimer();
+
+setInterval(updateTimer,1000);
+
+</script>
+
+{% endblock %}

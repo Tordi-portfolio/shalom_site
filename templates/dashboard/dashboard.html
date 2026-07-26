@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<style>
+.subject-card{
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.subject-card:hover{
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.subject-card .card-body{
+  padding: 1.75rem;
+}
+
+.subject-card h4{
+  margin-bottom: 0.6rem;
+  font-size: 1.2rem;
+}
+
+.subject-card p{
+  color: var(--slate);
+  font-size: 0.92rem;
+}
+
+.subject-card hr{
+  margin: 1.25rem 0;
+}
+
+.subject-meta{
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.subject-meta strong{
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 500;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--slate);
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.subject-meta span{
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.subject-card .card-footer{
+  background: var(--paper) !important;
+  border-top: 1px solid var(--paper-line);
+  padding: 1.1rem 1.75rem;
+}
+
+.subject-card .btn-success:disabled{
+  background: rgba(47,125,92,0.12);
+  border-color: rgba(47,125,92,0.25);
+  color: var(--success);
+  opacity: 1;
+  font-weight: 500;
+}
+
+.welcome-heading{
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+</style>
+
+<div class="container mt-4">
+
+    <h2 class="welcome-heading">
+        Welcome,
+        {{ user.first_name|default:user.username }}
+    </h2>
+
+    <div class="row">
+
+        {% for subject in subjects %}
+
+        <div class="col-lg-4 col-md-6 mb-4">
+
+            <div class="card subject-card h-100">
+
+                <div class="card-body">
+
+                    <h4>{{ subject.title }}</h4>
+
+                    <p>
+                        {{ subject.description }}
+                    </p>
+
+                    <hr>
+
+                    <div class="subject-meta">
+
+                        <div>
+                            <strong>Duration</strong>
+                            <span>{{ subject.duration }} Minutes</span>
+                        </div>
+
+                        <div>
+                            <strong>Questions</strong>
+                            <span>{{ subject.questions.count }}</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+
+                    {% if subject.id in completed_subjects %}
+
+                        <button class="btn btn-success w-100" disabled>
+                            <i class="bi bi-check-circle"></i> Completed
+                        </button>
+
+                    {% else %}
+
+                        <a href="{% url 'start_exam' subject.id %}"
+                           class="btn btn-primary w-100">
+                            Start Examination
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+
+            <div class="alert alert-warning">
+                No subjects are available at the moment.
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

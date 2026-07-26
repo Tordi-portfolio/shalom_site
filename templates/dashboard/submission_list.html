@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}
+Submitted Exams
+{% endblock %}
+
+{% block content %}
+
+<style>
+/* ---------- Tables ---------- */
+.table-card{
+  background: var(--card);
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.table-ledger{
+  margin-bottom: 0;
+}
+
+.table-ledger thead th{
+  background: var(--ink);
+  color: #fff;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  border: none;
+  padding: 0.9rem 1.25rem;
+  vertical-align: middle;
+}
+
+.table-ledger tbody td{
+  padding: 1rem 1.25rem;
+  border-color: var(--paper-line);
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+
+.table-ledger tbody tr{
+  transition: background 0.12s ease;
+}
+.table-ledger tbody tr:hover{
+  background: rgba(217,142,43,0.05);
+}
+
+.table-ledger tbody tr:last-child td{
+  border-bottom: none;
+}
+
+.score-pill{
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 500;
+  background: var(--paper);
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.badge-count{
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--slate);
+  background: var(--card);
+  border: 1px solid var(--paper-line);
+  border-radius: 20px;
+  padding: 0.35rem 0.9rem;
+}
+
+.empty-state{
+  text-align: center;
+  padding: 3rem 1rem !important;
+  color: var(--slate);
+  font-size: 0.95rem;
+}
+
+.empty-state i{
+  display: block;
+  font-size: 1.8rem;
+  color: var(--paper-line);
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px){
+  .table-ledger thead{ display: none; }
+  .table-ledger, .table-ledger tbody, .table-ledger tr, .table-ledger td{
+    display: block;
+    width: 100%;
+  }
+  .table-ledger tr{ border-bottom: 2px solid var(--paper-line); padding: 0.75rem 0; }
+  .table-ledger td{
+    border: none;
+    padding: 0.35rem 1.25rem;
+  }
+  .table-ledger td.text-end{ text-align: left !important; }
+}
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2 class="mb-0">Submitted Exams</h2>
+
+    <span class="badge-count">{{ exams|length }} submission{{ exams|length|pluralize }}</span>
+
+</div>
+
+<div class="table-card">
+
+<table class="table table-ledger mb-0">
+
+<thead>
+
+<tr>
+
+<th>Student</th>
+
+<th>Subject</th>
+
+<th>Submitted</th>
+
+<th>Total Score</th>
+
+<th class="text-end">Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for exam in exams %}
+
+<tr>
+
+<td class="fw-medium">{{ exam.user.username }}</td>
+
+<td>{{ exam.subject.title }}</td>
+
+<td class="text-muted">{{ exam.submitted_at }}</td>
+
+<td><span class="score-pill">{{ exam.score }}</span></td>
+
+<td class="text-end">
+
+    <a href="{% url 'view_submission' exam.id %}"
+       class="btn btn-primary btn-sm">
+        View
+    </a>
+
+    <a href="{% url 'delete_submission' exam.id %}"
+       class="btn btn-outline-danger btn-sm"
+       onclick="return confirm('Are you sure you want to delete this submission? This action cannot be undone.');">
+        Delete
+    </a>
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="5" class="empty-state">
+
+    <i class="bi bi-inbox"></i>
+    No submitted exams.
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+{% endblock %}
