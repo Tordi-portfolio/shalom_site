@@ -44,27 +44,58 @@
         <p>
 
             {{ question.question }}
-
+ 
         </p>
 
-        <form method="POST" id="questionForm">
+        <form method="POST" enctype="multipart/form-data" id="questionForm">
 
+        
             {% csrf_token %}
 
-            <textarea
+            {% if question.allow_text %}
 
-                name="answer"
+            <label class="form-label">
 
-                id="answer"
+            Answer
 
-                rows="8"
+            </label>
 
-                class="form-control"
+            <textarea name="answer" id="answer" rows="8" class="form-control">{% if answer.answer %}{{ answer.answer }}{% endif %}</textarea>
 
-                required
+            {% endif %}
+            {% if question.allow_image %}
 
-            >{{ answer.answer }}</textarea>
+            <br>
 
+            <label class="form-label">
+
+            Upload Image
+
+            </label>
+
+            <input type="file" name="image" accept="image/*" class="form-control" {% if question.image_required %} required {% endif %}>
+            
+            {% endif %}
+
+            {% if answer.uploaded_image %}
+
+        <br>
+
+        <h5>
+
+        Uploaded Image
+
+        </h5>
+
+        <img
+
+        src="{{ answer.uploaded_image.url }}"
+
+        class="img-thumbnail"
+
+        style=" max-width:350px; border-radius:12px;">
+
+        {% endif %}
             <br>
 
             <div class="d-flex justify-content-between">
