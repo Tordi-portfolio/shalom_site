@@ -6,143 +6,284 @@
 
 {% block content %}
 
-<div class="card shadow">
+<style>
 
-    <div class="card-body">
+.exam-card{
+    background:#fff;
+    border-radius:15px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    padding:30px;
+}
 
-        <div class="d-flex justify-content-between align-items-center">
+.timer-box{
+    background:#fff3cd;
+    border:1px solid #ffe69c;
+    border-radius:10px;
+    padding:15px;
+}
 
-            <h3>{{ exam.subject.title }}</h3>
+.question-box{
+    background:#f8f9fa;
+    border-left:5px solid #0d6efd;
+    padding:20px;
+    border-radius:10px;
+}
 
-            <div class="text-end">
+.upload-preview{
+    max-width:350px;
+    border-radius:10px;
+    margin-top:15px;
+    border:1px solid #ddd;
+}
 
-                <small class="text-muted">Time Remaining</small>
+.progress{
+    height:12px;
+}
 
-                <h4 id="timer" class="text-danger mb-0"></h4>
+.file-card{
+    background:#f8f9fa;
+    border:1px solid #ddd;
+    padding:12px;
+    border-radius:10px;
+}
 
-            </div>
+</style>
 
-        </div>
+<div class="container mt-4">
 
-        <hr>
+<div class="exam-card">
 
-        <div class="progress mb-3">
+<div class="d-flex justify-content-between align-items-center flex-wrap">
 
-            <div
-                class="progress-bar"
-                style="width:{% widthratio number total 100 %}%">
-            </div>
+<div>
 
-        </div>
+<h3>{{ exam.subject.title }}</h3>
 
-        <h5>
+<p class="text-muted">
 
-            Question {{ number }} of {{ total }}
+Question {{ number }} of {{ total }}
 
-        </h5>
+</p>
 
-        <p>
+</div>
 
-            {{ question.question }}
- 
-        </p>
+<div class="timer-box text-center">
 
-        <form method="POST" enctype="multipart/form-data" id="questionForm">
+<small>Time Remaining</small>
 
-        
-            {% csrf_token %}
+<h4 id="timer" class="text-danger mb-0"></h4>
 
-            {% if question.allow_text %}
+</div>
 
-            <label class="form-label">
+</div>
 
-            Answer
+<hr>
 
-            </label>
+<div class="progress mb-4">
 
-            <textarea name="answer" id="answer" rows="8" class="form-control">{% if answer.answer %}{{ answer.answer }}{% endif %}</textarea>
+<div
+class="progress-bar bg-success"
+style="width:{% widthratio number total 100 %}%">
+</div>
 
-            {% endif %}
-            {% if question.allow_image %}
+</div>
 
-            <br>
+<div class="question-box mb-4">
 
-            <label class="form-label">
+<h5>
 
-            Upload Image
+{{ question.question|linebreaks }}
 
-            </label>
+</h5>
 
-            <input type="file" name="image" accept="image/*" class="form-control" {% if question.image_required %} required {% endif %}>
-            
-            {% endif %}
+</div>
 
-            {% if answer.uploaded_image %}
+<form
+method="POST"
+enctype="multipart/form-data"
+id="questionForm">
 
-        <br>
+{% csrf_token %}
 
-        <h5>
+{% if question.allow_text %}
 
-        Uploaded Image
+<div class="mb-4">
 
-        </h5>
+<label class="form-label">
 
-        <img
+Your Answer
 
-        src="{{ answer.uploaded_image.url }}"
+</label>
 
-        class="img-thumbnail"
+<textarea
+name="answer"
+id="answer"
+rows="8"
+class="form-control"
+placeholder="Type your answer here...">{% if answer.answer %}{{ answer.answer }}{% endif %}</textarea>
 
-        style=" max-width:350px; border-radius:12px;">
+<small class="text-muted">
 
-        {% endif %}
-            <br>
+Press Shift + Enter for a new line.
 
-            <div class="d-flex justify-content-between">
+</small>
 
-                {% if number > 1 %}
+</div>
 
-                <a
-                    class="btn btn-secondary"
-                    href="{% url 'question_page' exam.id number|add:'-1' %}">
+{% endif %}
 
-                    ← Previous
+{% if question.allow_image %}
 
-                </a>
+<div class="mb-4">
 
-                {% else %}
+<label class="form-label">
 
-                <div></div>
+Upload Image
 
-                {% endif %}
+</label>
 
-                {% if number == total %}
+<input
+type="file"
+name="image"
+id="imageInput"
+accept="image/*"
+class="form-control"
 
-                <button
-                    class="btn btn-success"
-                    type="submit">
+{% if question.image_required %}
+required
+{% endif %}
 
-                    Submit Exam
+>
 
-                </button>
+</div>
 
-                {% else %}
+{% endif %}
 
-                <button
-                    class="btn btn-primary"
-                    type="submit">
+{% if answer.uploaded_image %}
 
-                    Next →
+<div class="mb-4">
 
-                </button>
+<h6>
 
-                {% endif %}
+Current Uploaded Image
 
-            </div>
+</h6>
 
-        </form>
+<img
+src="{{ answer.uploaded_image.url }}"
+class="upload-preview img-fluid">
 
-    </div>
+</div>
+
+{% endif %}
+
+{% if question.allow_file %}
+
+<div class="mb-4">
+
+<label class="form-label">
+
+Upload Document
+
+</label>
+
+<input
+type="file"
+name="file"
+class="form-control"
+
+accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+
+{% if question.file_required %}
+required
+{% endif %}
+
+>
+
+<small class="text-muted">
+
+Allowed:
+
+PDF, Word, PowerPoint and Excel.
+
+</small>
+
+</div>
+
+{% endif %}
+
+{% if answer.uploaded_file %}
+
+<div class="file-card mb-4">
+
+<strong>
+
+Current Document
+
+</strong>
+
+<br><br>
+
+<a
+href="{{ answer.uploaded_file.url }}"
+target="_blank"
+class="btn btn-outline-primary btn-sm">
+
+Open Uploaded Document
+
+</a>
+
+</div>
+
+{% endif %}
+
+<hr>
+
+<div class="d-flex justify-content-between">
+
+{% if number > 1 %}
+
+<a
+href="{% url 'question_page' exam.id number|add:'-1' %}"
+class="btn btn-secondary">
+
+← Previous
+
+</a>
+
+{% else %}
+
+<div></div>
+
+{% endif %}
+
+{% if number == total %}
+
+<button
+type="submit"
+class="btn btn-success">
+
+Submit Exam
+
+</button>
+
+{% else %}
+
+<button
+type="submit"
+class="btn btn-primary">
+
+Save & Next →
+
+</button>
+
+{% endif %}
+
+</div>
+
+</form>
+
+</div>
 
 </div>
 
@@ -152,61 +293,111 @@
 
 <script>
 
-// Submit when Enter is pressed
-const textarea = document.getElementById("answer");
+//==============================
+// ENTER TO SUBMIT
+//==============================
 
-textarea.addEventListener("keydown", function(e){
+const textarea=document.getElementById("answer");
 
-    if(e.key === "Enter" && !e.shiftKey){
+if(textarea){
 
-        e.preventDefault();
+textarea.addEventListener("keydown",function(e){
 
-        document.getElementById("questionForm").submit();
+if(e.key==="Enter" && !e.shiftKey){
 
-    }
+e.preventDefault();
+
+document.getElementById("questionForm").submit();
+
+}
 
 });
 
+}
 
-// ==========================
-// 24-Hour Countdown Timer
-// ==========================
+//==============================
+// IMAGE PREVIEW
+//==============================
 
-const expiresAt = new Date("{{ exam.expires_at|date:'c' }}").getTime();
+const image=document.getElementById("imageInput");
+
+if(image){
+
+image.addEventListener("change",function(){
+
+const file=this.files[0];
+
+if(!file) return;
+
+const reader=new FileReader();
+
+reader.onload=function(e){
+
+let preview=document.getElementById("preview");
+
+if(!preview){
+
+preview=document.createElement("img");
+
+preview.id="preview";
+
+preview.className="upload-preview img-fluid";
+
+image.parentNode.appendChild(preview);
+
+}
+
+preview.src=e.target.result;
+
+}
+
+reader.readAsDataURL(file);
+
+});
+
+}
+
+//==============================
+// COUNTDOWN TIMER
+//==============================
+
+const expiresAt=new Date(
+"{{ exam.expires_at|date:'c' }}"
+).getTime();
 
 function updateTimer(){
 
-    const now = new Date().getTime();
+const now=new Date().getTime();
 
-    let distance = expiresAt - now;
+let distance=expiresAt-now;
 
-    if(distance <= 0){
+if(distance<=0){
 
-        document.getElementById("timer").innerHTML = "Expired";
+document.getElementById("timer").innerHTML="Expired";
 
-        // Reload so Django detects expiry,
-        // deletes the session,
-        // and returns the user to the dashboard.
-        location.reload();
+location.reload();
 
-        return;
+return;
 
-    }
+}
 
-    const hours = Math.floor(distance / (1000 * 60 * 60));
+const hours=Math.floor(distance/(1000*60*60));
 
-    distance %= (1000 * 60 * 60);
+distance%=1000*60*60;
 
-    const minutes = Math.floor(distance / (1000 * 60));
+const minutes=Math.floor(distance/(1000*60));
 
-    distance %= (1000 * 60);
+distance%=1000*60;
 
-    const seconds = Math.floor(distance / 1000);
+const seconds=Math.floor(distance/1000);
 
-    document.getElementById("timer").innerHTML =
-        String(hours).padStart(2,'0') + ":" +
-        String(minutes).padStart(2,'0') + ":" +
-        String(seconds).padStart(2,'0');
+document.getElementById("timer").innerHTML=
+
+String(hours).padStart(2,"0")+":"+
+
+String(minutes).padStart(2,"0")+":"+
+
+String(seconds).padStart(2,"0");
 
 }
 

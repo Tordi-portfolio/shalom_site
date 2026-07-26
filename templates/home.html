@@ -1,16 +1,161 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}
 Home
 {% endblock %}
 
 {% block content %}
 
+<style>
+.hero{
+  padding: 4.5rem 2rem 4rem;
+}
+
+.hero-logo-badge{
+  width: auto;
+  max-width: 280px;
+  min-height: 130px;
+  margin: 0 auto 1.75rem;
+  padding: 1.25rem 2rem;
+  border-radius: var(--radius-lg);
+  background: #fff;
+  border: 1px solid var(--paper-line);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-logo-badge img{
+  max-width: 100%;
+  max-height: 110px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  filter: contrast(1.12) saturate(1.08);
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.hero-wordmark{
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  margin-bottom: 1.75rem;
+}
+
+.hero-wordmark span{
+  color: var(--amber-dark);
+}
+
+.hero .eyebrow{
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--amber-dark);
+  background: rgba(217,142,43,0.1);
+  border: 1px solid rgba(217,142,43,0.25);
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 1.25rem;
+}
+
+.hero .display-4{
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+
+.hero .lead{
+  color: var(--slate);
+  font-size: 1.2rem;
+  max-width: 34rem;
+  margin: 0 auto 2rem;
+}
+
+.hero .btn-lg{
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--ink);
+  font-weight: 600;
+  padding: 0.85rem 2.25rem;
+  font-size: 1.05rem;
+}
+.hero .btn-lg:hover{
+  background: var(--amber-dark);
+  border-color: var(--amber-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ---------- Feature strip ---------- */
+.feature-row{
+  margin-top: 3rem;
+}
+
+.feature-card{
+  background: var(--card);
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1.75rem 1.5rem;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.feature-card:hover{
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.feature-icon{
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: rgba(22,35,63,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: var(--ink);
+}
+
+.feature-card h5{
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+}
+
+.feature-card p{
+  color: var(--slate);
+  font-size: 0.9rem;
+  margin-bottom: 0;
+}
+
+@media (max-width: 576px){
+  .hero{ padding: 3rem 1.25rem 2.5rem; }
+  .hero-logo-badge{ min-height: 100px; padding: 1rem 1.5rem; max-width: 220px; }
+  .hero-logo-badge img{ max-height: 80px; }
+  .hero-wordmark{ font-size: 1.15rem; }
+}
+</style>
+
 <div class="hero text-center">
+
+    <div class="hero-logo-badge">
+        <img src="{% static 'logo.jfif' %}" alt="Veloura Management logo">
+    </div>
+
+    <div class="hero-wordmark">VELOURA <span>MANAGEMENT</span></div>
+
+    <span class="eyebrow">Online Test System</span>
 
     <h1 class="display-4 fw-bold">
 
-        Welcome To Veloura Management Online Test System
+        Welcome To Veloura Management Online Test Screaning
 
     </h1>
 
@@ -29,6 +174,34 @@ Home
         </a>
 
     {% endif %}
+
+</div>
+
+<div class="row feature-row g-4">
+
+    <div class="col-md-4">
+        <div class="feature-card">
+            <div class="feature-icon"><i class="bi bi-shield-lock"></i></div>
+            <h5>Secure Testing</h5>
+            <p>Every session is protected end-to-end for a trustworthy exam experience.</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="feature-card">
+            <div class="feature-icon"><i class="bi bi-clock-history"></i></div>
+            <h5>Timed Sessions</h5>
+            <p>Exams run on a clear countdown so pacing is fair and consistent.</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="feature-card">
+            <div class="feature-icon"><i class="bi bi-graph-up"></i></div>
+            <h5>Instant Replies</h5>
+            <p>Jobs are calculated the moment you submit — no waiting around.</p>
+        </div>
+    </div>
 
 </div>
 
