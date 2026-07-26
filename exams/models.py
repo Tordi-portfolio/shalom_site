@@ -28,18 +28,20 @@ class Question(models.Model):
 
     question = models.TextField()
 
-    marks = models.PositiveIntegerField(default=5)
-
     order = models.PositiveIntegerField(default=1)
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    marks = models.PositiveIntegerField(default=10)
 
-    class Meta:
-        ordering = ["order"]
+    # New fields
+    allow_text = models.BooleanField(default=True)
+
+    allow_image = models.BooleanField(default=False)
+
+    image_required = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.subject.title} - Question {self.order}"
-
+        return self.question[:50]
+    
 
 class ExamSession(models.Model):
 
@@ -89,18 +91,16 @@ class StudentAnswer(models.Model):
 
     answer = models.TextField(blank=True)
 
+    uploaded_image = models.ImageField(
+        upload_to="student_answers/",
+        blank=True,
+        null=True
+    )
+
     score = models.DecimalField(
         max_digits=5,
         decimal_places=2,
         default=0
     )
 
-    feedback = models.TextField(
-        blank=True
-    )
-
-    class Meta:
-        unique_together = ("exam", "question")
-
-    def __str__(self):
-        return f"{self.exam.user.username} - Question {self.question.order}"
+    feedback = models.TextField(blank=True)

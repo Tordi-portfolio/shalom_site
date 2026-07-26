@@ -100,52 +100,66 @@ def question_page(request, exam_id, number):
         completed=False
     )
 
+    # Check if exam has expired
     if timezone.now() >= exam.expires_at:
 
-        StudentAnswer.objects.filter(
-            exam=exam
-        ).delete()
-
+        exam.answers.all().delete()
         exam.delete()
+
+        messages.error(
+            request,
+            "Your examination has expired. Please start again."
+        )
 
         return redirect("dashboard")
 
     questions = list(
-        exam.subject.questions.all()
+        exam.subject.questions.order_by("order")
     )
 
     total = len(questions)
 
     if number < 1 or number > total:
-
-        return redirect(
-            "question_page",
-            exam.id,
-            1
-        )
+        return redirect("question_page", exam.id, 1)
 
     question = questions[number - 1]
 
     answer, created = StudentAnswer.objects.get_or_create(
-
         exam=exam,
-
         question=question
-
     )
 
     if request.method == "POST":
 
-        answer.answer = request.POST.get("answer")
+        # Save text answer
+        if question.allow_text:
+            answer.answer = request.POST.get("answer", "")
+
+        # Save uploaded image
+        if question.allow_image:
+
+            image = request.FILES.get("image")
+
+            if image:
+                answer.uploaded_image = image
+
+            elif question.image_required and not answer.uploaded_image:
+
+                messages.error(
+                    request,
+                    "This question requires an image."
+                )
+
+                return redirect(
+                    "question_page",
+                    exam.id,
+                    number
+                )
 
         answer.save()
 
         if number == total:
-
-            return redirect(
-                "submit_exam",
-                exam.id
-            )
+            return redirect("submit_exam", exam.id)
 
         return redirect(
             "question_page",
@@ -153,38 +167,16 @@ def question_page(request, exam_id, number):
             number + 1
         )
 
-    context = {
-
-        "exam": exam,
-
-        "question": question,
-
-        "answer": answer,
-
-        "number": number,
-
-        "total": total,
-
-    }
-    now = timezone.now()
-
-    if now >= exam.expires_at:
-
-        exam.answers.all().delete()
-
-        exam.delete()
-
-        messages.error(
-            request,
-            "Your examination time has expired. A new attempt has been created. Please start again."
-        )
-
-        return redirect("dashboard")
-
     return render(
         request,
         "exams/question.html",
-        context
+        {
+            "exam": exam,
+            "question": question,
+            "answer": answer,
+            "number": number,
+            "total": total,
+        }
     )
 
 

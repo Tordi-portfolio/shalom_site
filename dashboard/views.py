@@ -291,7 +291,10 @@ def submission_list(request):
         },
     )
 
-@login_required
+
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required
 def view_submission(request, exam_id):
 
     exam = get_object_or_404(
@@ -299,13 +302,11 @@ def view_submission(request, exam_id):
         id=exam_id
     )
 
-    answers = exam.answers.select_related(
-        "question"
-    )
+    answers = exam.answers.select_related("question")
 
     if request.method == "POST":
 
-        total_score = 0
+        total = 0
 
         for answer in answers:
 
@@ -319,17 +320,23 @@ def view_submission(request, exam_id):
                 ""
             )
 
-            answer.score = score
+            answer.score = score or 0
             answer.feedback = feedback
             answer.save()
 
-            total_score += float(score)
+            total += float(answer.score)
 
-        exam.score = total_score
+        exam.score = total
         exam.save()
 
+        messages.success(
+            request,
+            "Scores saved successfully."
+        )
+
         return redirect(
-            "submission_list"
+            "view_submission",
+            exam.id
         )
 
     return render(
@@ -337,8 +344,8 @@ def view_submission(request, exam_id):
         "dashboard/view_submission.html",
         {
             "exam": exam,
-            "answers": answers,
-        },
+            "answers": answers
+        }
     )
 
 
