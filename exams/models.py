@@ -27,6 +27,10 @@ class Question(models.Model):
     )
 
     question = models.TextField()
+    
+    allow_file = models.BooleanField(default=False)
+
+    file_required = models.BooleanField(default=False)
 
     order = models.PositiveIntegerField(default=1)
 
@@ -92,7 +96,13 @@ class StudentAnswer(models.Model):
     answer = models.TextField(blank=True)
 
     uploaded_image = models.ImageField(
-        upload_to="student_answers/",
+        upload_to="student_answers/images/",
+        blank=True,
+        null=True
+    )
+
+    uploaded_file = models.FileField(
+        upload_to="student_answers/files/",
         blank=True,
         null=True
     )
