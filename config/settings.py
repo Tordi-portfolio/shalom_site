@@ -18,7 +18,9 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    'shalom-site.onrender.com',
+    "shalom-site.onrender.com",
+    "velouramanagement.site",
+    "www.velouramanagement.site",
 ]
 
 
